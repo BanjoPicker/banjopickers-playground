@@ -2,9 +2,7 @@
 #include<pthread.h>
 #include<sched.h>
 
-namespace qbak {
-
-namespace xls {
+namespace banjopicker {
 
 class Filament {
 
@@ -102,9 +100,8 @@ class Filament {
 
 }; /* class Filament */
 
-}; /* namespace qbak */
+}; /* namespace banjopicker */
 
-}; /* namespace xls */
 
 // this should be in a library instead, but for a test program this is fine
-pthread_mutex_t qbak::xls::Filament::RunnableMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t banjopicker::Filament::RunnableMutex = PTHREAD_MUTEX_INITIALIZER;

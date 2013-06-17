@@ -4,7 +4,7 @@
 /* Global Variable to test for preemption: */
 int pCurrent;
 
-class MyFilament : public qbak::xls::Filament {
+class MyFilament : public banjopicker::Filament {
     public:
         MyFilament(int _id) : Filament(_id), EXIT_FILAMENT(false) { }
 
@@ -26,7 +26,7 @@ class MyFilament : public qbak::xls::Filament {
         }
 };  /* class MyFilament */
 
-class MyOtherFilament : public qbak::xls::Filament {
+class MyOtherFilament : public banjopicker::Filament {
     public:
         MyOtherFilament(int _id) : Filament(_id), EXIT_FILAMENT(false) { }
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Starting e.start() = " << e.start() << std::endl;
     std::cout << "Starting f.start() = " << f.start() << std::endl;
     sleep(10*1);
-    //qbak::xls::Filament::Lock();
+    //banjopicker::Filament::Lock();
     printf("Main thread exiting the filaments\n");
     a.EXIT_FILAMENT = true;
     b.EXIT_FILAMENT = true;
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
     d.EXIT_FILAMENT = true;
     e.EXIT_FILAMENT = true;
     f.EXIT_FILAMENT = true;
-    //qbak::xls::Filament::Unlock();
+    //banjopicker::Filament::Unlock();
     sleep(3);
     printf("Exiting main \n");
     return 0;
