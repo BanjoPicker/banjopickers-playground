@@ -3,6 +3,10 @@
 *.a
 *.so
 
+
+build
+dist
+
 # Package Files #
 *.jar
 *.war
