@@ -2,6 +2,11 @@
 #include<pthread.h>
 #include<sched.h>
 
+
+/**
+ *  <p>This is an expiremental test class to see if an idea would work out.</p>
+ */
+
 namespace banjopicker {
 
 class Filament {
