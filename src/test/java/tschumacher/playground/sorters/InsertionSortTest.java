@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import junit.framework.TestCase;
 import org.junit.Test;
 import tschumacher.playground.ArraySorter;
@@ -36,16 +37,17 @@ public class InsertionSortTest extends TestCase {
 	 * Test of sort method, of class InsertionSort.
 	 */
 	public void testSort() {
-		int[] arr = {2,3,1,5,5,4,-3,10,4,3};
-
-		ArraySorter as = new TimedSorter(new InsertionSort());
-		as.sort(arr);
-		System.out.println(dumpArray(arr));
-		assertTrue(isSorted(arr));
+		for(int i=10000;i<50000;i += 1000) {
+			int[] arr = randomArray(i);
+			ArraySorter as = new TimedSorter(new InsertionSort());
+			as.sort(arr);
+			assertTrue(isSorted(arr));
+		}
 	}
 
 	@Test
 	public void testBestCase() {
+		System.out.println("testBestCase");
 		int[] arr = new int[MAX_SIZE];
 		for(int i = 0; i < arr.length; i++) {
 			arr[i] = i;
@@ -57,6 +59,7 @@ public class InsertionSortTest extends TestCase {
 
 	@Test
 	public void testWorstCase() {
+		System.out.println("testWorstCase");
 		int[] arr = new int[MAX_SIZE];
 		for(int i = 0; i < arr.length; i++) {
 			arr[i] = arr.length - i;
@@ -114,6 +117,17 @@ public class InsertionSortTest extends TestCase {
 			sb.append("]");
 			return sb.toString();
 		}
+	}
+
+	private int[] randomArray(int length) {
+		int[] result = new int[length];
+		Random random = new Random();
+
+		for(int i=0;i<result.length;i++) {
+			result[i] = random.nextInt();
+		}
+
+		return result;
 	}
 
 	final static int MAX_SIZE = 100000;
