@@ -15,11 +15,13 @@ import tschumacher.playground.ArraySorter;
 public class InsertionSort implements ArraySorter {
 	public void sort(int[] arr) {
 		if(arr == null) {
-			// Fail fast error handling:
-			throw new NullPointerException("array cannot be null");
+			return;  // ok, empty array is already sorted!
 		}
 
-		// the "sorted array consists of elements in positions [a,b)
+		// The array has elements in [0,arr.length).  
+		// We partition this into [0,b) U [b,arr.length) where [0,b) contains sorted elements.
+		// Finally, we "insert" the bth element into the sorted array by exchanging it with it's neighbor while it is smaller than it's left neighbor.
+
 		int a = 0, b = 1;  // Initially, the sorted array lies in [0,1). 
 		while(b < arr.length) {
 			// move element at position b into the sorted array.

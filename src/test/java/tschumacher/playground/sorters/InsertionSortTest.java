@@ -4,8 +4,12 @@
  */
 package tschumacher.playground.sorters;
 
-import junit.framework.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import junit.framework.TestCase;
+import org.junit.Test;
 import tschumacher.playground.ArraySorter;
 
 /**
@@ -32,20 +36,35 @@ public class InsertionSortTest extends TestCase {
 	 * Test of sort method, of class InsertionSort.
 	 */
 	public void testSort() {
-		int[] arr = {2,3,1,5,5,4};
+		int[] arr = {2,3,1,5,5,4,-3,10,4,3};
 
-		ArraySorter as = new InsertionSort();
+		ArraySorter as = new TimedSorter(new InsertionSort());
 		as.sort(arr);
-		System.out.println(arr);
+		System.out.println(dumpArray(arr));
 		assertTrue(isSorted(arr));
-		
 	}
 
 
-	@org.junit.Test(expected=java.lang.NullPointerException.class)
+	@Test
 	public void testNullArray() {
 		ArraySorter as = new InsertionSort();
 		as.sort(null);
+	}
+	
+	@Test
+	public void testEmptyArray() {
+		int[] arr = new int[0];
+		ArraySorter as = new InsertionSort();
+		as.sort(arr);
+		assertTrue(isSorted(arr));
+	}
+
+	@Test
+	public void testOneElement() {
+		int[] arr = {2};
+		ArraySorter as = new InsertionSort();
+		as.sort(arr);
+		assertTrue(isSorted(arr));
 	}
 
 	public boolean isSorted(int[] arr) {
@@ -58,6 +77,21 @@ public class InsertionSortTest extends TestCase {
 				}
 			}
 			return true;
+		}
+	}
+
+	public String dumpArray(int[] arr) {
+		if(arr==null) {
+			return "null";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("[");
+			sb.append(arr[0]);
+			for(int i=1;i<arr.length;i++) {
+				sb.append(",").append(arr[i]);
+			}
+			sb.append("]");
+			return sb.toString();
 		}
 	}
 }
