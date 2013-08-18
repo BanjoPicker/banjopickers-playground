@@ -25,9 +25,9 @@ public class TimedSorter implements ArraySorter {
     @Override 
     public void sort(int[] arr) {
         long a, b;
-        a = System.getCurrentTime();
+        a = System.currentTimeMillis();
         this.sorter.sort(arr);
-        b = System.getCurrentTime();
+        b = System.currentTimeMillis();
         System.out.println("Sorted in " + (b-a) + " millis.");
     }
 }
