@@ -44,6 +44,27 @@ public class InsertionSortTest extends TestCase {
 		assertTrue(isSorted(arr));
 	}
 
+	@Test
+	public void testBestCase() {
+		int[] arr = new int[MAX_SIZE];
+		for(int i = 0; i < arr.length; i++) {
+			arr[i] = i;
+		}
+		ArraySorter as = new TimedSorter(new InsertionSort());
+		as.sort(arr);
+		assertTrue(isSorted(arr));
+	}
+
+	@Test
+	public void testWorstCase() {
+		int[] arr = new int[MAX_SIZE];
+		for(int i = 0; i < arr.length; i++) {
+			arr[i] = arr.length - i;
+		}
+		ArraySorter as = new TimedSorter(new InsertionSort());
+		as.sort(arr);
+		assertTrue(isSorted(arr));
+	}
 
 	@Test
 	public void testNullArray() {
@@ -94,4 +115,6 @@ public class InsertionSortTest extends TestCase {
 			return sb.toString();
 		}
 	}
+
+	final static int MAX_SIZE = 100000;
 }
