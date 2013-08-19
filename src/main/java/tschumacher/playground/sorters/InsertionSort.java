@@ -26,7 +26,7 @@ public class InsertionSort implements ArraySorter {
 		// Finally, we "insert" the bth element into the sorted array by exchanging it with it's 
 		// neighbor until it is in the correct place.
 
-		int b = 1;  // Initially, the sorted array lies in [0,1). 
+		int b = 1;  // Initially, the sorted array lies in [0,1), i.e. the zeroth element.
 		while(b < arr.length) {
 			int k = ++b;
 			while(--k > 0 && arr[k-1] > arr[k]) {
@@ -42,9 +42,13 @@ public class InsertionSort implements ArraySorter {
 	 * @param j 
 	 */
 	private void swap(int[] arr, int i, int j) {
+		
 		//arr[i] ^= arr[j];
 		//arr[j] ^= arr[i];
 		//arr[i] ^= arr[j];
+
+		// This is much faster than the xor way?
+
 		final int x = arr[i];
 		arr[i] = arr[j];
 		arr[j] = x;
