@@ -13,22 +13,24 @@ import tschumacher.playground.ArraySorter;
  */
 
 public class InsertionSort implements ArraySorter {
+
+	@Override
 	public void sort(int[] arr) {
 		if(arr == null) {
 			return;  // ok, empty array is already sorted!
 		}
 
 		// The array has elements in [0,arr.length).  
-		// We partition this into [0,b) U [b,arr.length) where [0,b) contains sorted elements.
-		// Finally, we "insert" the bth element into the sorted array by exchanging it with it's neighbor while it is smaller than it's left neighbor.
+		// We partition this into [0,b) U [b,arr.length) where [0,b) contains sorted elements, 
+		// starting with b=1.
+		// Finally, we "insert" the bth element into the sorted array by exchanging it with it's 
+		// neighbor until it is in the correct place.
 
-		int a = 0, b = 1;  // Initially, the sorted array lies in [0,1). 
+		int b = 1;  // Initially, the sorted array lies in [0,1). 
 		while(b < arr.length) {
-			// move element at position b into the sorted array.
-			int k = b++;
-			while(k>0 && arr[k] < arr[k-1]) {
-				swap(arr, k, k-1);
-				k--;
+			int k = ++b;
+			while(--k > 0 && arr[k-1] > arr[k]) {
+				swap(arr, k-1, k);
 			}
 		}
 	}
@@ -40,7 +42,10 @@ public class InsertionSort implements ArraySorter {
 	 * @param j 
 	 */
 	private void swap(int[] arr, int i, int j) {
-		int x = arr[i];
+		//arr[i] ^= arr[j];
+		//arr[j] ^= arr[i];
+		//arr[i] ^= arr[j];
+		final int x = arr[i];
 		arr[i] = arr[j];
 		arr[j] = x;
 	}
