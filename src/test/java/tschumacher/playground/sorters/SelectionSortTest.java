@@ -8,11 +8,11 @@ import tschumacher.playground.ArraySorter;
  *
  * @author Timothy Schumacher, Ph.D. <schumact@gmail.com>
  */
-public class InsertionSortTest extends TestCase {
+public class SelectionSortTest extends TestCase {
 
-	ArraySorter as = new TimedSorter(new InsertionSort());
+	ArraySorter as = new TimedSorter(new SelectionSort());
 	
-	public InsertionSortTest(String testName) {
+	public SelectionSortTest(String testName) {
 		super(testName);
 	}
 	
@@ -27,7 +27,7 @@ public class InsertionSortTest extends TestCase {
 	}
 
 	/**
-	 * Test of sort method, of class InsertionSort.
+	 * Test of sort method, of class SelectionSort.
 	 */
 	public void testSort() {
 		SortTestUtils.testSort(as);

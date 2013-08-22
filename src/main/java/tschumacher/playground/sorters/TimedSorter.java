@@ -28,6 +28,6 @@ public class TimedSorter implements ArraySorter {
         a = System.currentTimeMillis();
         this.sorter.sort(arr);
         b = System.currentTimeMillis();
-        System.out.println("TimedSorter[" + this.sorter.getClass().getName() + ", " + arr.length + " elements, "+ (b-a) + " ms]");
+        System.out.println("TimedSorter[" + this.sorter.getClass().getName() + ", " + (arr != null ? arr.length : "null") + " elements, "+ (b-a) + " ms]");
     }
 }

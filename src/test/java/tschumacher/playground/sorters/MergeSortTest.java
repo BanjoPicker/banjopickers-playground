@@ -28,12 +28,8 @@ public class MergeSortTest extends TestCase {
 	 * Test of sort method, of class MergeSort.
 	 */
 	public void testSort() {
-		for(int i=10000;i<50000;i += 1000) {
-			int[] arr = SortTestUtils.randomArray(i);
-			ArraySorter as = new TimedSorter(new MergeSort());
-			as.sort(arr);
-			assertTrue(SortTestUtils.isSorted(arr));
-		}
+		ArraySorter as = new TimedSorter(new MergeSort());
+		SortTestUtils.testSort(as);
 	}
 
 	@Test

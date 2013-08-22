@@ -8,11 +8,9 @@ import tschumacher.playground.ArraySorter;
  *
  * @author Timothy Schumacher, Ph.D. <schumact@gmail.com>
  */
-public class InsertionSortTest extends TestCase {
-
-	ArraySorter as = new TimedSorter(new InsertionSort());
+public class QuicksortTest extends TestCase {
 	
-	public InsertionSortTest(String testName) {
+	public QuicksortTest(String testName) {
 		super(testName);
 	}
 	
@@ -27,42 +25,23 @@ public class InsertionSortTest extends TestCase {
 	}
 
 	/**
-	 * Test of sort method, of class InsertionSort.
+	 * Test of sort method, of class Quicksort.
 	 */
 	public void testSort() {
+		ArraySorter as = new TimedSorter(new Quicksort());
 		SortTestUtils.testSort(as);
 	}
 
 	@Test
-	public void testBestCase() {
-		System.out.println("testBestCase");
-		int[] arr = new int[MAX_SIZE];
-		for(int i = 0; i < arr.length; i++) {
-			arr[i] = i;
-		}
-		as.sort(arr);
-		assertTrue(SortTestUtils.isSorted(arr));
-	}
-
-	@Test
-	public void testWorstCase() {
-		System.out.println("testWorstCase");
-		int[] arr = new int[MAX_SIZE];
-		for(int i = 0; i < arr.length; i++) {
-			arr[i] = arr.length - i;
-		}
-		as.sort(arr);
-		assertTrue(SortTestUtils.isSorted(arr));
-	}
-
-	@Test
 	public void testNullArray() {
+		ArraySorter as = new Quicksort();
 		as.sort(null);
 	}
 	
 	@Test
 	public void testEmptyArray() {
 		int[] arr = new int[0];
+		ArraySorter as = new Quicksort();
 		as.sort(arr);
 		assertTrue(SortTestUtils.isSorted(arr));
 	}
@@ -70,8 +49,22 @@ public class InsertionSortTest extends TestCase {
 	@Test
 	public void testOneElement() {
 		int[] arr = {2};
+		ArraySorter as = new Quicksort();
 		as.sort(arr);
 		assertTrue(SortTestUtils.isSorted(arr));
+	}
+
+	@Test
+	public void testTenElements() {
+		int[] arr = {1,2,3,4,5,6,7,8,9,10};
+		int[] prm = SortTestUtils.permute(arr);
+		ArraySorter as = new Quicksort();
+		System.out.println("arr: " + SortTestUtils.dumpArray(arr));
+		System.out.println("prm: " + SortTestUtils.dumpArray(prm));
+		as.sort(prm);
+		System.out.println("prm: " + SortTestUtils.dumpArray(prm));
+		assertTrue(SortTestUtils.isSorted(arr));
+		assertTrue(SortTestUtils.compareArrays(arr, prm));
 	}
 
 	final static int MAX_SIZE = 100000;
