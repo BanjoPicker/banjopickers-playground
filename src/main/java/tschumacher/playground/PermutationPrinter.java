@@ -5,6 +5,10 @@ package tschumacher.playground;
  * 		Problem is to write a program to print out all permutations 
  * 		of a given string.  Do not treat duplicates in any special way. 
  * 	</p>
+ * 
+ * 	<p>
+ * 		This was for an interview problem that didn't get right away!
+ * 	</p>
  * 	@author Timothy Schumacher, Ph.D. <schumact@gmail.com>
  */
 
