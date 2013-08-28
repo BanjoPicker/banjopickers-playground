@@ -1,8 +1,17 @@
 package tschumacher.playground;
 
+/**
+ * 	<p>
+ * 		Problem is to write a program to print out all permutations 
+ * 		of a given string.  Do not treat duplicates in any special way. 
+ * 	</p>
+ * 	@author Timothy Schumacher, Ph.D. <schumact@gmail.com>
+ */
+
+
 public class PermutationPrinter {
 
-    public static void PrintPermutations(String acc, String s) {
+    private static void PrintPermutations(String acc, String s) {
         if(s.length() <= 1) {
             System.out.println(acc + s);
         } else {
@@ -13,7 +22,6 @@ public class PermutationPrinter {
             }
         }
     }
-
 
     public static void main(String args[]) {
         String word = args[0];
