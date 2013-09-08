@@ -1,13 +1,15 @@
+#!/usr/bin/rscript
+# NOTE the above, we call rscript, NOT r!
 
-
-
-
-hello <- funtion ( )
-{
-   print(" ", quote = false)
-   print("Hello, wolrd!", quote=false)
+hello <- function() {
+   print("Hello, wolrd!")
 }
 
-hello ( )
-Sys.time ( )
-quit ( )
+hello()
+
+x <- c(1,2,3,4)
+y <- x^2
+print(x)
+print(y)
+
+quit()
