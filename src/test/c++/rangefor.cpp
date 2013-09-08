@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     }
 
     // initializer list verion:
-    for(double d : {3.14, 3.141, 3.1415, 3.14159}) {
+    for(auto d : {3.14, 3.141, 3.1415, 3.14159}) {
         std::cout << "initializer list loop: d=" << d << std::endl;    
     }
 
