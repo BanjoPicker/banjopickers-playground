@@ -1,6 +1,7 @@
 /*
  *  <p>Simple demonstraion of range based for loops from C++11</p>
  *
+ *  <p>I am using gnu gcc 4.8.1 and compiling with 'g++ -std=c++11 rangefor.cpp' for example.</p>
  */
 #include<iostream>
 #include<vector>
