@@ -5,6 +5,7 @@
  *  The basic idea is the for single argument constructors, the compiler will automaticcaly (implicitly) 
  *  convert from the argument type to the class type when needed.  You can prevent this behaviour by 
  *  using the lkeyword explicit on any constructor you do not wish to behave this way.
+ *
  */
 
 class Foo {
