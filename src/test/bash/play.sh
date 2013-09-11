@@ -18,4 +18,4 @@ trap onexit     EXIT
 
 echo "start of script"
 
-
+echo "last line of script"
