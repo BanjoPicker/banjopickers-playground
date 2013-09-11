@@ -3,16 +3,22 @@ SHELL := /bin/bash
 BOOST_HOME = /opt/boost-1.54.0
 BOOST_LIB  = $(BOOST_HOME)/lib
 
+GXX = $(shell which clang++)
+GXX_OPTS = --std=c++11
+GXX_INCL = -Isrc/test/c++ -I$(BOOST_HOME)/include
+GXX_LIBS = -lpthread -lboost_filesystem -lboost_system
+
 build/%.o: src/test/c++/%.cpp $(shell find src/test/c++ -type f -name '*.hpp')
-	mkdir -p build
-	g++ -std=c++11 -I src/test/c++ -c -o $@ $<
+	@mkdir -p build
+	$(GXX) $(GXX_OPTS) $(GXX_INCL) -c -o $@ $<
 
 build/%: build/%.o
-	g++ -o $@ $< -L$(BOOST_LIB) -lpthread -lboost_filesytem -lboost_system
+	$(GXX) -o $@ $< -L$(BOOST_LIB) $(GXX_LIBS)
 
 TARGETS = build/FilamentTest
-TARGETS += build/rangefor
+#TARGETS += build/rangefor
 TARGETS += build/boost
+TARGETS += build/explicit
 
 .phony: all
 all: $(TARGETS)
