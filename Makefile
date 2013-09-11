@@ -10,6 +10,7 @@ GXX_LIBS = -lpthread -lboost_filesystem -lboost_system
 
 build/%.o: src/test/c++/%.cpp $(shell find src/test/c++ -type f -name '*.hpp')
 	@mkdir -p build
+	@echo ""
 	$(GXX) $(GXX_OPTS) $(GXX_INCL) -c -o $@ $<
 
 build/%: build/%.o
