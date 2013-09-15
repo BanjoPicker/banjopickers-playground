@@ -31,6 +31,6 @@ summary(lm.fit1)$sigma
 # ANOVA table to compare models:
 anova(lm.fit1, lm.fit2, lm.fit3)
 
-plot(lstat,medv)
-plot(lm.fit2)
-abline(lm.fit1)
+#plot(lstat,medv)
+#plot(lm.fit2)
+#abline(lm.fit1)
