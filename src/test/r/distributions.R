@@ -8,6 +8,9 @@ print(rexp(5))
 # Draw5 weibulls with shape parameter 3:
 print(rweibull(5,3));
 
+#draw 100 samples of a poisson distribution:
+print(rpois(100,3))
+
 # for each distribution DIST, there are functions 
 #   dDIST = density function for the distribution
 #   pDIST = cumulative distribution function i.e. pDIST(x) = Prob(X <= x) where X ~ DIST
