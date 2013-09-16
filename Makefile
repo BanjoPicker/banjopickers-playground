@@ -20,6 +20,7 @@ TARGETS = build/FilamentTest
 #TARGETS += build/rangefor
 TARGETS += build/boost
 TARGETS += build/explicit
+TARGETS += build/self
 
 .phony: all
 all: $(TARGETS)
