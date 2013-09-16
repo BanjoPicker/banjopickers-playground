@@ -50,9 +50,13 @@ class Foo {
         return result.str();
     }
 
-    public: int getX(void) const { return *x; }
+    public: int getX(void) const { 
+        return *x; 
+    }
 
-    public: void setX(const int val) { *x = val; }
+    public: void setX(const int val) { 
+        *x = val; 
+    }
 
     // data //////////////////////////
 
