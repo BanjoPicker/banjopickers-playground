@@ -5,6 +5,7 @@
 package tschumacher.playground;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.junit.After;
@@ -12,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static tschumacher.playground.Utils.join;
 import static org.junit.Assert.*;
 
 /**
@@ -71,5 +73,14 @@ public class UtilsTest {
 		for(String s : mappedList) {
 			System.out.println(s);
 		}	
+	}
+
+	@Test
+	public void joinTest() {
+		System.out.println( join(",", 5,10,15) );
+		System.out.println( join(",", "foo", "bar", "baz") );
+		
+		List<Integer> asList = Arrays.asList(5,6,7,8,9);
+		System.out.println( "[" + join(",", asList) + "]");
 	}
 }
