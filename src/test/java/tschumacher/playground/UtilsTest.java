@@ -54,4 +54,22 @@ public class UtilsTest {
 			System.out.println(i);
 		}	
 	}
+	
+	/**
+	 * Test of map method, of class Utils.
+	 */
+	@Test
+	public void mapFilter() {
+		List<Integer> list = new ArrayList<Integer>();
+		
+		for(int i=0;i<10;i++) {
+			list.add(i);
+		}
+		Collection<String> mappedList = Utils.map(list, new Mapper<Integer, String>() {
+			public String apply(Integer a) { return String.format("0x%08x", a); }
+		});
+		for(String s : mappedList) {
+			System.out.println(s);
+		}	
+	}
 }

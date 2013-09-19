@@ -19,5 +19,16 @@ public final class Utils {
 		return result;
 	}
 
+	/**
+	 * 	<p>Apply f:A-->B to a collection and return the collection that results.</p>
+	 */
+	public static <A,B> Collection<B> map(Collection<A> collection, Mapper<A,B> mapper) {
+		ArrayList<B> result = new ArrayList<B>();
+		for(A a : collection) {
+			result.add(mapper.apply(a));
+		}
+		return result;
+	}
+
 	private Utils() {/* no instances */}
 }
