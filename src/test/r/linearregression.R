@@ -1,4 +1,4 @@
-#!/usr/bin/rscript
+#!/usr/bin/env Rscript
 
 # Load the data library MASS
 library("MASS")
