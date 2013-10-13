@@ -29,19 +29,18 @@ class Foo {
     }
     
     public: void swap(Foo& foo) {
-        int * const t = x;
-        x = foo.x;
-        foo.x = t;
+        using std::swap;
+        swap(x, foo.x);
     }
 
     public: const Foo& operator=(const Foo& foo) {
-        std::cout << "Foo::operator=()" << std::endl;
-        if(this == &foo) { 
-            std::cout << "Self assignment attempted, no-op!" << std::endl;
-            return *this;  // do not allow self assignments!
-        }
-        *x = foo.getX();
-        return *this;
+        std::cout << "Foo::operator=(Foo)" << std::endl;
+
+        // guarantees we do not have self assignment problem as well as ensuring exception robustness:
+        
+        Foo f(foo);     // copy the incoming foo
+        swap(f);        // swap out our internals for the copies internals
+        return *this;   // return *this
     }
 
     public: std::string toString(void) const {
