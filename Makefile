@@ -5,7 +5,7 @@ SHELL := /bin/bash
 BOOST_HOME = /opt/boost-1.54.0
 BOOST_LIB  = $(BOOST_HOME)/lib
 
-GXX = $(shell which clang++)
+GXX = $(shell which g++)
 GXX_OPTS = --std=c++11
 GXX_INCL = -Isrc/test/c++ -I$(BOOST_HOME)/include
 GXX_LIBS = -lpthread -lboost_filesystem -lboost_system
