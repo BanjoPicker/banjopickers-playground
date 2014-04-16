@@ -18,6 +18,11 @@ build/%.o: src/test/c++/%.cpp $(shell find src/test/c++ -type f -name '*.hpp')
 	@echo ""
 	$(GXX) $(GXX_OPTS) $(GXX_INCL) -c -o $@ $<
 
+build/%.o: src/test/c++/%.cc $(shell find src/test/c++ -type f -name '*.hpp')
+	@mkdir -p build
+	@echo ""
+	$(GXX) $(GXX_OPTS) $(GXX_INCL) -c -o $@ $<
+
 build/%: build/%.o
 	$(GXX) -o $@ $< -L$(BOOST_LIB) $(GXX_LIBS)
 
@@ -33,6 +38,7 @@ TARGETS = build/FilamentTest
 TARGETS += build/boost
 TARGETS += build/explicit
 TARGETS += build/self
+TARGETS += build/to_string
 TARGETS += build/gen/test.h
 TARGETS += build/gen/org/bp.h
 
