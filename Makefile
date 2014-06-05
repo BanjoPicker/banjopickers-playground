@@ -6,7 +6,7 @@ BOOST_HOME = /opt/boost-1.54.0
 BOOST_LIB  = $(BOOST_HOME)/lib
 
 GXX = $(shell which g++)
-GXX_OPTS = --std=c++11
+GXX_OPTS = 
 GXX_INCL = -Isrc/test/c++ -I$(BOOST_HOME)/include
 GXX_LIBS = -lpthread -lboost_filesystem -lboost_system
 
@@ -23,6 +23,8 @@ TARGETS = build/FilamentTest
 TARGETS += build/boost
 TARGETS += build/explicit
 TARGETS += build/self
+TARGETS += build/for_each
+TARGETS += build/play
 
 .phony: all
 all: $(TARGETS)
