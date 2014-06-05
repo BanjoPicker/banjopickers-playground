@@ -1,0 +1,6 @@
+
+package org;
+
+message schumact {
+    required int32 x = 1 [default=0];
+}

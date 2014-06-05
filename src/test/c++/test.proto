@@ -1,0 +1,5 @@
+
+
+message foo {
+    required string comment=1;
+}
