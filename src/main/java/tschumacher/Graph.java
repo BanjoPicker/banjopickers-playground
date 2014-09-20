@@ -117,6 +117,18 @@ public class Graph<T> {
 	edges.add(edge);
   }
   
+  public synchronized void AddEdges(T from, T ... to) {
+    if (from == null || to == null || to.length == 0) {
+      return;
+	}
+	maybeAddNode(from);
+	Node<T> f = getNode(from);
+	for (T child : to) {
+      maybeAddNode(child);
+	  edges.add(new Edge<T>(f, getNode(child)));		  
+	}
+  }
+  
   /**
    * <p>Produce a topological sort, if possible.</p>
    * @return
@@ -164,7 +176,7 @@ public class Graph<T> {
   private synchronized T unwrap(Node<T> node) {
 	  return node.value;
   }
-  private synchronized Node<T> wrap(T t) {
+  protected synchronized Node<T> wrap(T t) {
 	  return getNode(t);
   }
   private synchronized Collection<T> unwrap(Collection<Node<T>> c) {
