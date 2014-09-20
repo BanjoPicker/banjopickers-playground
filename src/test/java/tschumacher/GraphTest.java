@@ -2,6 +2,7 @@ package tschumacher;
 
 import static org.junit.Assert.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,8 +17,11 @@ public class GraphTest {
 		graph.AddEdge("a", "c");
 		graph.AddEdge("b", "c");
 		graph.AddEdge("c", "d");
+		
+		System.out.println(graph);
+		
 		Set<String> s = new HashSet<String>();
-		Set<String> c = graph.TransitiveClosure(s);
+		Collection<String> c = graph.TransitiveClosure(s);
 		assertNotNull(c);
 		assertEquals(0, c.size());
 	}
@@ -33,7 +37,7 @@ public class GraphTest {
 		graph.AddEdge("d", "a");
 		Set<String> s = new HashSet<String>();
 		s.add("a");
-		Set<String> c = graph.TransitiveClosure(s);
+		Collection<String> c = graph.TransitiveClosure(s);
 		System.out.println(Graph.Join(c, ","));
 		assertNotNull(c);
 		assertEquals(4, c.size());
