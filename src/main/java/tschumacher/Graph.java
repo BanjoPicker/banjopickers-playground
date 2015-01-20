@@ -99,21 +99,21 @@ public class Graph<T> {
   }
 
   public synchronized boolean AddEdge(T from, T to) {
-	final boolean tonew = nodes.add(new Node<T>(nullcheck(to)));
-	final boolean fromnew = nodes.add(new Node<T>(nullcheck(from)));
+    final boolean tonew = nodes.add(new Node<T>(nullcheck(to)));
+    final boolean fromnew = nodes.add(new Node<T>(nullcheck(from)));
     final Node<T> fromNode = nullcheck(GetNode(from));
     final Node<T> toNode = nullcheck(GetNode(to));
 	if (edges.add(new Edge<T>(fromNode, toNode))) {
-        if (fromnew && tonew) {
-            fromNode.level = 0; toNode.level = 1;
-        } else if (fromnew && !tonew) {
-            fromNode.level = Math.min(0, toNode.level - 1);
-        } else if (!fromnew && tonew) {
-            toNode.level = fromNode.level+1;
-        } else {
-            toNode.level = Math.max(toNode.level, fromNode.level + 1);
-        }
-        return true;
+      if (fromnew && tonew) {
+        fromNode.level = 0; toNode.level = 1;
+      } else if (fromnew && !tonew) {
+        fromNode.level = Math.min(0, toNode.level - 1);
+      } else if (!fromnew && tonew) {
+        toNode.level = fromNode.level+1;
+      } else {
+        toNode.level = Math.max(toNode.level, fromNode.level + 1);
+      }
+      return true;
     }
     return false;
   }
