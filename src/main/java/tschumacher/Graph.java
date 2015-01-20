@@ -1,11 +1,12 @@
 package tschumacher;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -14,10 +15,12 @@ public class Graph<T> {
   public static class Node<T> {
     public T value;
     public int status;
+    protected int level;
     
     public Node(T t) {
     	this.value = t;
     	this.status = 0;
+        this.level = 0;
     }
     
 	@Override
@@ -27,30 +30,37 @@ public class Graph<T> {
 	
 	@Override
 	public boolean equals(Object other) {
-        if (other == null)
+        if (other == null) {
         	return false;
-		if (other == this)
+        }
+        if (other == this) {
             return true;
+        }
         if (other instanceof Graph.Node) {
             Graph.Node<?> n = (Graph.Node<?>)other;
-            if (Objects.equals(value, n.value))
+            if (Objects.equals(value, n.value)) {
                 return true;
+            }
         }
         return false;
 	}
+
+    @Override
+    public String toString() {
+        return String.format("Node[%s,%d,%d]",
+                             this.value.toString(),
+                             this.status,
+                             this.level);
+    }
   };
 
   public static class Edge<T> {
     public Node<T> from;
     public Node<T> to;
-    public double weight;
-    public int status;
     
     public Edge(Node<T> from, Node<T> to) {
     	this.to = to;
     	this.from = from;
-    	this.status = 0;
-    	this.weight = 0.0;
     }
     
     @Override
@@ -72,69 +82,68 @@ public class Graph<T> {
       return false;
 	}
 
-  }
+    @Override
+    public String toString() {
+        return String.format("Edge[%s,%s]",
+                             from.toString(), to.toString())
+    }
+  };
 
   public Graph() {
     edges = new HashSet<Edge<T>>();
     nodes = new HashSet<Node<T>>();
   }
- 
-  /**
-   * @return Number of nodes in this graph.
-   */
-  public synchronized int size() {
-    return nodes.size();
-  }
-  
-  /**
-   * <p>Add a node to the graph if it was not already present.</p>
-   */
-  public synchronized void maybeAddNode(T t) {
-	if (t != null) {
-	  Node<T> node = new Node<T>(t);
-	  nodes.add(node);  // set remains unchanged if already present
-	}
-  }
-  
-  public synchronized Node<T> getNode(T t) {
-    for (Node<T> node : nodes) {
-      if (node.value.equals(t)) {
-        return node;
-      }
-    }
-    return null;
+
+  public synchronized boolean AddNode(T t) {
+	return nodes.add(new Node<T>(nullcheck(t)));
   }
 
-  /**
-   * <p>Add an edge, and also the nodes if not already present.</p>
-   */
-  public synchronized void AddEdge(T from, T to) {
-    if (from == null || to == null) return;
-	maybeAddNode(to);
-	maybeAddNode(from);
-	Edge<T> edge = new Edge<T>(getNode(from),
-			                   getNode(to));
-	edges.add(edge);
+  public synchronized boolean AddEdge(T from, T to) {
+	final boolean tonew = nodes.add(new Node<T>(nullcheck(to)));
+	final boolean fromnew = nodes.add(new Node<T>(nullcheck(from)));
+    final Node<T> fromNode = nullcheck(GetNode(from));
+    final Node<T> toNode = nullcheck(GetNode(to));
+	if (edges.add(new Edge<T>(fromNode, toNode))) {
+        if (fromnew && tonew) {
+            fromNode.level = 0; toNode.level = 1;
+        } else if (fromnew && !tonew) {
+            fromNode.level = Math.min(0, toNode.level - 1);
+        } else if (!fromnew && tonew) {
+            toNode.level = fromNode.level+1;
+        } else {
+            toNode.level = Math.max(toNode.level, fromNode.level + 1);
+        }
+        return true;
+    }
+    return false;
   }
   
-  public synchronized void AddEdges(T from, T ... to) {
-    if (from == null || to == null || to.length == 0) {
-      return;
-	}
-	maybeAddNode(from);
-	Node<T> f = getNode(from);
-	for (T child : to) {
-      maybeAddNode(child);
-	  edges.add(new Edge<T>(f, getNode(child)));		  
-	}
+  public synchronized List<Node<T>> TopologicalSort() {
+    List<Node<T>> result = new LinkedList<Node<T>>();
+    result.addAll(nodes);  // linear in |nodes|
+    Collections.sort(result, (Node<T> a, Node<T> b) -> {
+        if (a.level == b.level)
+            return a.value.toString().compareTo(b.value.toString());
+        else
+            return a.level - b.level;
+    });  // n log n in |nodes|
+    return result;
   }
-  
-  /**
-   * <p>Produce a topological sort, if possible.</p>
-   * @return
-   */
-  public synchronized List<T> topologicalSort() {
-    List<T> result = new LinkedList<T>();
+
+  public synchronized List<? extends Set<T>> CoffmanGraham() {
+    LinkedList<HashSet<T>> result = new LinkedList<HashSet<T>>();
+    List<Node<T>> nodes = this.TopologicalSort();
+    int level = nodes.get(0).level;
+    HashSet<T> s = new HashSet<T>();
+    for (Node<T> node : nodes) {
+        if (level != node.level) {
+            level = node.level;
+            result.add(s);
+            s = new HashSet<T>();
+        }
+        s.add(node.value);
+    }
+    result.add(s);
     return result;
   }
   
@@ -145,6 +154,19 @@ public class Graph<T> {
 	    children.add(edge.to);
 	  }
 	return children;
+  }
+
+  public synchronized int size() {
+    return nodes.size();
+  }
+
+  public synchronized Node<T> GetNode(T t) {
+    for (Node<T> node : nodes) {
+      if (node.value.equals(t)) {
+        return node;
+      }
+    }
+    return null;
   }
   
   /**
@@ -173,12 +195,14 @@ public class Graph<T> {
     return result;
   }
   
-  private synchronized T unwrap(Node<T> node) {
+  private T unwrap(Node<T> node) {
 	  return node.value;
   }
-  protected synchronized Node<T> wrap(T t) {
-	  return getNode(t);
+
+  private Node<T> wrap(T t) {
+	  return GetNode(t);
   }
+
   private synchronized Collection<T> unwrap(Collection<Node<T>> c) {
 	  LinkedList<T> result = new LinkedList<T>();
 	  for (Node<T> node : c) {
@@ -195,47 +219,20 @@ public class Graph<T> {
 	  return result;
   }
   
-  /**
-   * <p>Return the coffman-graham ordering of the nodes in this graph.</p>
-   * @return A list of sets, or levels. Level 0 is the set of elements with no dependencies,
-   *         while level 1 is the set of elements with dependencies only from level 0 and in
-   *         general, level N consists of elements whose dependencies are contained in the
-   *         union of the previous levels. 
-   */
-  public synchronized List<? extends Set<T>> CoffmanGraham() {
-    LinkedList<HashSet<T>> result = new LinkedList<HashSet<T>>();
-    return result;
-  }
-  
-  /**
-   * <p>Helper to join a collection with a sep.</p>
-   * @param collection A collection.
-   * @param sep The separator string.
-   * @return A string.
-   */
-  public static <T> String Join(Collection<T> collection, String sep) {
-    StringBuffer sb = new StringBuffer();
-    if (collection == null || collection.isEmpty()) return sb.toString();
-    for (T element : collection) {
-    	sb.append(element.toString());
-    	sb.append(sep);
-    }
-    return sb.substring(0, sb.length() - sep.length());
-  }
-  
   @Override
   public String toString() {
     StringBuffer result = new StringBuffer();
-    for (Edge<T> edge : edges) {
-      result.append(edge.from.value);
-      result.append(",");
-      result.append(edge.to.value);
+    for (Node<T> node : nodes) {
+      result.append(node.toString());
       result.append("\n");
     }
-	return result.toString();
+    for (Edge<T> edge : edges) {
+      result.append(edge.toString());
+      result.append("\n");
+    }
+    return result.toString();
   }
 
-  // Internal helper to reset status to i.
   private synchronized void reset(int i) {
     for (Graph.Node<T> node : nodes) {
       node.status = i;
@@ -245,9 +242,14 @@ public class Graph<T> {
     }
   }
 
-  private Set<Edge<T>> edges;
-  private Set<Node<T>> nodes;
-  
-  // convenience to help us do faster lookups.
-  //private Map<T, Node<T>> nodemap;
-};  // class Graph
+  private final Set<Edge<T>> edges;
+  private final Set<Node<T>> nodes;
+
+  /**
+   * <p>Helper to do null checks.</p>
+   */
+  public static <T> T nullcheck(T o) {
+      if (o == null) throw new NullPointerException();
+      return o;
+  }
+};
