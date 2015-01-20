@@ -23,13 +23,13 @@ public class Graph<T> {
       this.level = 0;
     }
     
-	@Override
-	public int hashCode() {
+    @Override
+  public int hashCode() {
       return Objects.hash(value);
-	}
-	
-	@Override
-	public boolean equals(Object other) {
+  }
+  
+  @Override
+  public boolean equals(Object other) {
       if (other == null) {
         return false;
       }
@@ -43,7 +43,7 @@ public class Graph<T> {
         }
       }
       return false;
-	}
+  }
 
     @Override
     public String toString() {
@@ -59,8 +59,8 @@ public class Graph<T> {
     public Node<T> to;
     
     public Edge(Node<T> from, Node<T> to) {
-    	this.to = to;
-    	this.from = from;
+      this.to = to;
+      this.from = from;
     }
     
     @Override
@@ -69,10 +69,10 @@ public class Graph<T> {
     }
     
     @Override
-	public boolean equals(Object other) {
+    public boolean equals(Object other) {
       if (other == null)
         return false;
-	  if (other == this)
+    if (other == this)
         return true;
       if (other instanceof Graph.Edge) {
         Graph.Edge<?> e = (Graph.Edge<?>)other;
@@ -80,7 +80,7 @@ public class Graph<T> {
           return true;
       }
       return false;
-	}
+    }
 
     @Override
     public String toString() {
@@ -107,7 +107,7 @@ public class Graph<T> {
     final int kVisited = 2;
     reset(kUnknown);
     List<Node<T>> queue = new LinkedList<Node<T>>();
-    queue.add(root);
+    queue.add(nullcheck(root));
     while (!queue.isEmpty()) {
       Node<T> node = queue.remove(0);
       visitor.Visit(node);
@@ -210,10 +210,10 @@ public class Graph<T> {
    * @return A list of all nodes that are reachable from nodes.
    */
   public synchronized Collection<T> TransitiveClosure(Collection<T> nodes) {
-	final int kUnknown = 0;
-	final int kDiscovered = 1;
-	final int kVisited = 2;
-	reset(kUnknown);  // make sure all statuses are 0 again
+  final int kUnknown = 0;
+  final int kDiscovered = 1;
+  final int kVisited = 2;
+  reset(kUnknown);  // make sure all statuses are 0 again
     Set<T> result = new HashSet<T>();
     List<Node<T>> queue = new LinkedList<Node<T>>();
     queue.addAll(wrap(nodes));
@@ -222,10 +222,10 @@ public class Graph<T> {
       node.status = kVisited;  // mark as visited
       for (Node<T> child : getChildren(node)) {
         if (child.status == kUnknown) {
-          child.status = kDiscovered;  // mark as discovered    		
+          child.status = kDiscovered;  // mark as discovered        
           queue.add(child);
         }
-      }	
+      }  
     }
     return result;
   }
