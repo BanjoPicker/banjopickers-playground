@@ -111,10 +111,10 @@ public class Graph<T> {
     while (!queue.isEmpty()) {
       Node<T> node = queue.remove(0);
       visitor.Visit(node);
-      node.status = kVisited;  // mark as visited
+      node.status = kVisited;
       for (Node<T> child : getChildren(node)) {
         if (child.status == kUnknown) {
-          child.status = kDiscovered;  // mark as discovered    		
+          child.status = kDiscovered;
           queue.add(child);
         }
       }
