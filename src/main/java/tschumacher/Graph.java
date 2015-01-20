@@ -24,30 +24,30 @@ public class Graph<T> {
     }
     
     @Override
-  public int hashCode() {
-    return Objects.hash(value);
-  }
+    public int hashCode() {
+      return Objects.hash(value);
+    }
   
-  @Override
-  public boolean equals(Object other) {
-    if (other == null) {
-      return false;
-    }
-    if (other == this) {
-      return true;
-    }
-    if (other instanceof Graph.Node) {
-      Graph.Node<?> n = (Graph.Node<?>)other;
-      if (Objects.equals(value, n.value)) {
+    @Override
+    public boolean equals(Object other) {
+      if (other == null) {
+        return false;
+      }
+      if (other == this) {
         return true;
       }
+      if (other instanceof Graph.Node) {
+        Graph.Node<?> n = (Graph.Node<?>)other;
+        if (Objects.equals(value, n.value)) {
+          return true;
+        }
+      }
+      return false;
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return String.format("Node[%s,%d,%d]",
+    @Override
+    public String toString() {
+      return String.format("Node[%s,%d,%d]",
                            this.value.toString(),
                            this.status,
                            this.level);
