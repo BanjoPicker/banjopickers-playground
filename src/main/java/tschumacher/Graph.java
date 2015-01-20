@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 
 public class Graph<T> {
   public static class Node<T> {
@@ -99,6 +100,29 @@ public class Graph<T> {
 
   public synchronized boolean AddNode(T t) {
     return nodes.add(new Node<T>(nullcheck(t)));
+  }
+
+  public void dfs(Node<T> root, NodeVisitor visitor) {
+    final int kUnknown = 0;
+    final int kDiscovered = 1;
+    final int kVisited = 2;
+    reset(kUnknown);
+    Stack<Node<T>> stack = new Stack<Node<T>>();
+    stack.push(nullcheck(root));
+    while (!stack.isEmpty()) {
+      Node<T> node = stack.pop();
+      if (node.status != kVisited) {
+        node.status = kVisited;
+        visitor.Visit(node);
+        for (Node<T> child : getChildren(node)) {
+          stack.push(child);
+        }
+      }
+    }
+  }
+
+  public void dfs(T root, NodeVisitor visitor) {
+    dfs(wrap(root), visitor);
   }
 
   public void bfs(Node<T> root, NodeVisitor visitor) {
@@ -316,6 +340,7 @@ graph.AddEdge(10,13);
 
     graph.bfs(6, node -> System.out.println("6 " + node));
     graph.bfs(7, node -> System.out.println("7 " + node));
+    graph.dfs(6, node -> System.out.println("6 dfs " + node));
 
     System.out.println(graph);
   }
