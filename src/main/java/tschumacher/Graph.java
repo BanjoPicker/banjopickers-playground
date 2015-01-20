@@ -135,6 +135,7 @@ public class Graph<T> {
         toNode.level = fromNode.level + 1;
       } else {
         if (toNode.level <= fromNode.level) {
+          // note this isn't excatly right, the number of levels is not optimal
           int incr = fromNode.level - toNode.level + 1; 
           bfs(toNode, node -> node.level += incr);
         }
