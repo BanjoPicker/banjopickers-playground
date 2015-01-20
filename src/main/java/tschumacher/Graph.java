@@ -103,7 +103,7 @@ public class Graph<T> {
     final boolean fromnew = nodes.add(new Node<T>(nullcheck(from)));
     final Node<T> fromNode = nullcheck(GetNode(from));
     final Node<T> toNode = nullcheck(GetNode(to));
-	if (edges.add(new Edge<T>(fromNode, toNode))) {
+    if (edges.add(new Edge<T>(fromNode, toNode))) {
       if (fromnew && tonew) {
         fromNode.level = 0; toNode.level = 1;
       } else if (fromnew && !tonew) {
