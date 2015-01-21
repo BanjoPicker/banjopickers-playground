@@ -48,10 +48,7 @@ public class Graph<T> {
 
     @Override
     public String toString() {
-      return String.format("Node[%s,%d,%d]",
-                           this.value.toString(),
-                           this.status,
-                           this.level);
+      return String.format("Node[%s]", this.value.toString());
     }
 
     protected static final int UNKNOWN = 0;
@@ -150,8 +147,36 @@ public class Graph<T> {
     return result;
   }
 
-  public synchronized List<? extends Set<T>> CoffmanGraham() {
-    LinkedList<HashSet<T>> result = new LinkedList<HashSet<T>>();
+  public synchronized List<? extends Set<Node<T>>> CoffmanGraham() {
+    reset(0);
+    for (Node<T> node : nodes)
+      for (Node<T> child : node.children)
+        child.status++;  // incoming edge counter 
+
+    List<Node<T>> ready_nodes = new LinkedList<Node<T>>();
+    for (Node<T> node : nodes)
+      if (node.status == 0)
+        ready_nodes.add(node);  // no prerequisites
+
+    List<HashSet<Node<T>>> result = new LinkedList<HashSet<Node<T>>>();
+    while (!ready_nodes.isEmpty()) {
+      HashSet<Node<T>> level = new HashSet<Node<T>>();
+      level.addAll(ready_nodes);
+      result.add(level);
+      ready_nodes.clear();
+      for (Node<T> node : level) {
+        for (Node<T> child : node.children) {
+          child.status--;
+          if (child.status == 0)
+            ready_nodes.add(child);
+        }
+      }
+    }
+
+    for (Node<T> node : nodes)
+      if (node.status > 0)
+        return null;  // means loop present
+
     return result;
   }
   
@@ -231,9 +256,8 @@ public class Graph<T> {
     StringBuffer result = new StringBuffer();
     for (Node<T> node : nodes) {
       result.append(node.toString());
-      for (Node<T> child : node.children) {
-        result.append(child.toString());
-      }  
+      result.append(" ");
+      result.append(node.children);
       result.append("\n");
     }
     return result.toString();
@@ -255,35 +279,42 @@ public class Graph<T> {
   public static void main(String args[]) {
     Graph<Integer> graph = new Graph<Integer>();
 
-graph.AddEdge(9,11);
-graph.AddEdge(13,15);
-graph.AddEdge(12,15);
-graph.AddEdge(2,5);
-graph.AddEdge(5,8);
 graph.AddEdge(10,14);
-graph.AddEdge(5,9);
-graph.AddEdge(1,4);
-graph.AddEdge(8,11);
-graph.AddEdge(8,13);
-graph.AddEdge(9,12);
-graph.AddEdge(14,15);
-graph.AddEdge(11,15);
-graph.AddEdge(3,7);
 graph.AddEdge(6,8);
+graph.AddEdge(3,6);
+graph.AddEdge(9,11);
+graph.AddEdge(1,4);
+graph.AddEdge(2,5);
+graph.AddEdge(12,15);
+graph.AddEdge(8,13);
+graph.AddEdge(6,9);
+graph.AddEdge(4,8);
+graph.AddEdge(5,8);
+graph.AddEdge(5,9);
+graph.AddEdge(3,7);
+graph.AddEdge(13,15);
+graph.AddEdge(10,13);
+graph.AddEdge(8,11);
 graph.AddEdge(6,10);
 graph.AddEdge(7,10);
-graph.AddEdge(4,8);
-graph.AddEdge(3,6);
-graph.AddEdge(6,9);
-graph.AddEdge(10,13);
+graph.AddEdge(14,15);
+graph.AddEdge(9,12);
+graph.AddEdge(11,15);
 
+    
+    System.out.println("");
     System.out.println(graph.TopologicalSort());
-    System.out.println(graph.CoffmanGraham());
-
+    System.out.println("");
+    for (Set<Node<Integer>> level : graph.CoffmanGraham()) {
+      System.out.println(level);
+    }
+    System.out.println("");
     graph.bfs(6, node -> System.out.println("6 " + node));
+    System.out.println("");
     graph.bfs(7, node -> System.out.println("7 " + node));
+    System.out.println("");
     graph.dfs(6, node -> System.out.println("6 dfs " + node));
-
+    System.out.println("");
     System.out.println(graph);
   }
 };
