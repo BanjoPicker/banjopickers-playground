@@ -17,8 +17,10 @@ public class Graph<T> {
     public T value;
     public int status;
     protected int level;
+    protected final Set<Node<T>> children;
     
     public Node(T t) {
+      children = new HashSet<Node<T>>();
       this.value = t;
       this.status = 0;
       this.level = 0;
@@ -53,40 +55,10 @@ public class Graph<T> {
                            this.status,
                            this.level);
     }
-  };
 
-  public static class Edge<T> {
-    public Node<T> from;
-    public Node<T> to;
-    
-    public Edge(Node<T> from, Node<T> to) {
-      this.to = to;
-      this.from = from;
-    }
-    
-    @Override
-    public int hashCode() {
-      return Objects.hash(from) ^ Objects.hash(to);
-    }
-    
-    @Override
-    public boolean equals(Object other) {
-      if (other == null)
-        return false;
-    if (other == this)
-        return true;
-      if (other instanceof Graph.Edge) {
-        Graph.Edge<?> e = (Graph.Edge<?>)other;
-        if (Objects.equals(to, e.to) && Objects.equals(from, e.from))
-          return true;
-      }
-      return false;
-    }
-
-    @Override
-    public String toString() {
-      return String.format("Edge[%s,%s]", from.toString(), to.toString());
-    }
+    protected static final int UNKNOWN = 0;
+    protected static final int DISCOVERED = 1;
+    protected static final int VISITED = 2;
   };
 
   public static interface NodeVisitor<T> {
@@ -94,7 +66,6 @@ public class Graph<T> {
   };
 
   public Graph() {
-    edges = new HashSet<Edge<T>>();
     nodes = new HashSet<Node<T>>();
   }
 
@@ -103,18 +74,15 @@ public class Graph<T> {
   }
 
   public void dfs(Node<T> root, NodeVisitor visitor) {
-    final int kUnknown = 0;
-    final int kDiscovered = 1;
-    final int kVisited = 2;
-    reset(kUnknown);
+    reset(Node.UNKNOWN);
     Stack<Node<T>> stack = new Stack<Node<T>>();
     stack.push(nullcheck(root));
     while (!stack.isEmpty()) {
       Node<T> node = stack.pop();
-      if (node.status != kVisited) {
-        node.status = kVisited;
+      if (node.status != Node.VISITED) {
+        node.status = Node.VISITED;
         visitor.Visit(node);
-        for (Node<T> child : getChildren(node)) {
+        for (Node<T> child : node.children) {
           stack.push(child);
         }
       }
@@ -126,19 +94,16 @@ public class Graph<T> {
   }
 
   public void bfs(Node<T> root, NodeVisitor visitor) {
-    final int kUnknown = 0;
-    final int kDiscovered = 1;
-    final int kVisited = 2;
-    reset(kUnknown);
+    reset(Node.UNKNOWN);
     List<Node<T>> queue = new LinkedList<Node<T>>();
     queue.add(nullcheck(root));
     while (!queue.isEmpty()) {
       Node<T> node = queue.remove(0);
       visitor.Visit(node);
-      node.status = kVisited;
-      for (Node<T> child : getChildren(node)) {
-        if (child.status == kUnknown) {
-          child.status = kDiscovered;
+      node.status = Node.VISITED;
+      for (Node<T> child : node.children) {
+        if (child.status == Node.UNKNOWN) {
+          child.status = Node.DISCOVERED;
           queue.add(child);
         }
       }
@@ -150,69 +115,55 @@ public class Graph<T> {
   }
 
   public synchronized boolean AddEdge(T from, T to) {
-    final boolean fromnew = nodes.add(new Node<T>(nullcheck(from)));
-    final boolean tonew = nodes.add(new Node<T>(nullcheck(to)));
+    nodes.add(new Node<T>(nullcheck(from)));
+    nodes.add(new Node<T>(nullcheck(to)));
     final Node<T> fromNode = nullcheck(GetNode(from));
     final Node<T> toNode = nullcheck(GetNode(to));
-    if (edges.add(new Edge<T>(fromNode, toNode))) {
-      if (tonew) {
-        toNode.level = fromNode.level + 1;
-      } else {
-        if (toNode.level <= fromNode.level) {
-          // note this isn't excatly right, the number of levels is not optimal
-          int incr = fromNode.level - toNode.level + 1; 
-          bfs(toNode, node -> node.level += incr);
+    return fromNode.children.add(toNode);
+  }
+
+  public synchronized List<Node<T>> TopologicalSort() {
+    reset(0);
+    for (Node<T> node : nodes)
+      for (Node<T> child : node.children)
+        child.status++;  // incoming edge counter 
+
+    List<Node<T>> ready_nodes = new LinkedList<Node<T>>();
+    for (Node<T> node : nodes)
+      if (node.status == 0)
+        ready_nodes.add(node);  // no prerequisites
+
+    List<Node<T>> result = new LinkedList<Node<T>>();
+    while (!ready_nodes.isEmpty()) {
+      Node<T> ready_node = ready_nodes.remove(0);
+      result.add(ready_node);
+      for (Node<T> child : ready_node.children) {
+        child.status--;
+        if (child.status == 0) {
+          ready_nodes.add(child);
         }
       }
-      return true;
     }
-    return false;
-  }
-  
-  public synchronized List<Node<T>> TopologicalSort() {
-    List<Node<T>> result = new LinkedList<Node<T>>();
-    result.addAll(nodes);  // linear in |nodes|
-    Collections.sort(result, (Node<T> a, Node<T> b) -> {
-        if (a.level == b.level)
-            return a.value.toString().compareTo(b.value.toString());
-        else
-            return a.level - b.level;
-    });  // n log n in |nodes|
+    
+    for (Node<T> node : nodes)
+      if (node.status > 0)
+        return null;  // means loop present
+
     return result;
   }
 
   public synchronized List<? extends Set<T>> CoffmanGraham() {
     LinkedList<HashSet<T>> result = new LinkedList<HashSet<T>>();
-    List<Node<T>> nodes = this.TopologicalSort();
-    int level = nodes.get(0).level;
-    HashSet<T> s = new HashSet<T>();
-    for (Node<T> node : nodes) {
-        if (level != node.level) {
-            level = node.level;
-            result.add(s);
-            s = new HashSet<T>();
-        }
-        s.add(node.value);
-    }
-    result.add(s);
     return result;
   }
   
-  public synchronized Collection<Node<T>> getChildren(Node<T> node) {
-    Set<Node<T>> children = new HashSet<Node<T>>();
-    for (Edge<T> edge : edges) {
-      if (edge.from.equals(node))
-        children.add(edge.to);
+  public synchronized Collection<Node<T>> getAncestors(Node<T> child) {
+    List<Node<T>> ancestors = new LinkedList<Node<T>>();
+    for (Node<T> node : nodes) {
+      if (node.children.contains(child)) {
+        ancestors.add(node);
       }
-    return children;
-  }
-
-  public synchronized Collection<Node<T>> getAncestors(Node<T> node) {
-    Set<Node<T>> ancestors = new HashSet<Node<T>>();
-    for (Edge<T> edge : edges) {
-      if (edge.to.equals(node))
-        ancestors.add(edge.from);
-      }
+    }
     return ancestors;
   }
 
@@ -221,6 +172,7 @@ public class Graph<T> {
   }
 
   public synchronized Node<T> GetNode(T t) {
+    // TODO need to figure out how to use hash(t) to find it
     for (Node<T> node : nodes) {
       if (node.value.equals(t)) {
         return node;
@@ -235,19 +187,16 @@ public class Graph<T> {
    * @return A list of all nodes that are reachable from nodes.
    */
   public synchronized Collection<T> TransitiveClosure(Collection<T> nodes) {
-  final int kUnknown = 0;
-  final int kDiscovered = 1;
-  final int kVisited = 2;
-  reset(kUnknown);  // make sure all statuses are 0 again
+    reset(Node.UNKNOWN);
     Set<T> result = new HashSet<T>();
     List<Node<T>> queue = new LinkedList<Node<T>>();
     queue.addAll(wrap(nodes));
     while (!queue.isEmpty()) {
       Node<T> node = queue.remove(0);
-      node.status = kVisited;  // mark as visited
-      for (Node<T> child : getChildren(node)) {
-        if (child.status == kUnknown) {
-          child.status = kDiscovered;  // mark as discovered        
+      node.status = Node.VISITED;
+      for (Node<T> child : node.children) {
+        if (child.status == Node.UNKNOWN) {
+          child.status = Node.DISCOVERED;
           queue.add(child);
         }
       }  
@@ -284,10 +233,9 @@ public class Graph<T> {
     StringBuffer result = new StringBuffer();
     for (Node<T> node : nodes) {
       result.append(node.toString());
-      result.append("\n");
-    }
-    for (Edge<T> edge : edges) {
-      result.append(edge.toString());
+      for (Node<T> child : node.children) {
+        result.append(child.toString());
+      }  
       result.append("\n");
     }
     return result.toString();
@@ -299,15 +247,11 @@ public class Graph<T> {
     }
   }
 
-  private final Set<Edge<T>> edges;
   private final Set<Node<T>> nodes;
 
-  /**
-   * <p>Helper to do null checks.</p>
-   */
-  public static <T> T nullcheck(T o) {
-    if (o == null) throw new NullPointerException();
-    return o;
+  public static <S> S nullcheck(S s) {
+    if (s == null) throw new NullPointerException();
+    return s;
   }
 
   public static void main(String args[]) {
