@@ -1,5 +1,7 @@
 package tschumacher;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
@@ -277,43 +280,23 @@ public class Graph<T> {
   }
 
   public static void main(String args[]) {
-    Graph<Integer> graph = new Graph<Integer>();
-
-graph.AddEdge(10,14);
-graph.AddEdge(6,8);
-graph.AddEdge(3,6);
-graph.AddEdge(9,11);
-graph.AddEdge(1,4);
-graph.AddEdge(2,5);
-graph.AddEdge(12,15);
-graph.AddEdge(8,13);
-graph.AddEdge(6,9);
-graph.AddEdge(4,8);
-graph.AddEdge(5,8);
-graph.AddEdge(5,9);
-graph.AddEdge(3,7);
-graph.AddEdge(13,15);
-graph.AddEdge(10,13);
-graph.AddEdge(8,11);
-graph.AddEdge(6,10);
-graph.AddEdge(7,10);
-graph.AddEdge(14,15);
-graph.AddEdge(9,12);
-graph.AddEdge(11,15);
-
-    
+    Graph<String> graph = new Graph<String>();
+    try {
+    BufferedReader reader = new BufferedReader(new FileReader(args[0]));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      String[] tokens = line.split(" ");
+      if (tokens.length == 1) graph.AddNode(tokens[0]);
+      if (tokens.length == 2) graph.AddEdge(tokens[0], tokens[1]);
+    }
+    } catch (Exception e) { System.out.println("oops " + e); }
     System.out.println("");
     System.out.println(graph.TopologicalSort());
     System.out.println("");
-    for (Set<Node<Integer>> level : graph.CoffmanGraham()) {
+
+    for (Set<Node<String>> level : graph.CoffmanGraham()) {
       System.out.println(level);
     }
-    System.out.println("");
-    graph.bfs(6, node -> System.out.println("6 " + node));
-    System.out.println("");
-    graph.bfs(7, node -> System.out.println("7 " + node));
-    System.out.println("");
-    graph.dfs(6, node -> System.out.println("6 dfs " + node));
     System.out.println("");
     System.out.println(graph);
   }
