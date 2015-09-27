@@ -344,8 +344,8 @@ public class Graph<T> {
 	protected Set<Edge<T>> edges;
 	protected Set<Node<T>> nodes;
 	protected Map<T, Node<T>> nodemap;
-}; // class Graph
 
+/*
   public static class Node<T> {
     public T value;
     public int status;
@@ -539,11 +539,6 @@ public class Graph<T> {
     return null;
   }
   
-  /**
-   * <p>Find all "reachable" nodes from the set of nodes.</p>
-   * @param nodes
-   * @return A list of all nodes that are reachable from nodes.
-   */
   public synchronized Collection<T> TransitiveClosure(Collection<T> nodes) {
     reset(Node.UNKNOWN);
     Set<T> result = new HashSet<T>();
@@ -610,6 +605,7 @@ public class Graph<T> {
     if (s == null) throw new NullPointerException();
     return s;
   }
+  */
 
   public static void main(String args[]) {
     Graph<String> graph = new Graph<String>();
@@ -618,7 +614,7 @@ public class Graph<T> {
     String line;
     while ((line = reader.readLine()) != null) {
       String[] tokens = line.split(" ");
-      if (tokens.length == 1) graph.AddNode(tokens[0]);
+  //    if (tokens.length == 1) graph.AddNode(tokens[0]);
       if (tokens.length == 2) graph.AddEdge(tokens[0], tokens[1]);
     }
     } catch (Exception e) { System.out.println("oops " + e); }
@@ -626,9 +622,9 @@ public class Graph<T> {
     System.out.println(graph.TopologicalSort());
     System.out.println("");
 
-    for (Set<Node<String>> level : graph.CoffmanGraham()) {
-      System.out.println(level);
-    }
+ //   for (Set<Node<String>> level : graph.CoffmanGraham()) {
+ //     System.out.println(level);
+ //   }
     System.out.println("");
     System.out.println(graph);
   }
