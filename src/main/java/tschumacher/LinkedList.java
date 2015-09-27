@@ -27,8 +27,10 @@ public class LinkedList<T> implements List<T> {
 	
 	public static class Iterator<T> implements java.util.Iterator<T> {
 
-		public Iterator(Node<T> head) {
+		public Iterator(LinkedList<T> list, Node<T> head) {
+			this.list = list;
 			this.node = head;
+			this.previous = null;
 		}
 		
 		/**
@@ -43,28 +45,25 @@ public class LinkedList<T> implements List<T> {
 		 */
 		public T next() {
 			T result = node.value;
+			previous = node;
 			node = node.next;
 			return result;
 		}
 
 		public void remove() {
-			Node<T> next = node.next;
-			Node<T> previous = node.previous;
-			if (previous != null) {
-				previous.next = node.next;
-				if (node.next != null) {
-					node.next.previous = previous;
-				}
-			}
-			node.previous = null;
-			node.next = null;
-			node = next;
+			list.remove(this.previous);
 		}
 		
 		/**
 		 * <p>The node that is the next read pointer.</p>
 		 */
 		Node<T> node;
+		Node<T> previous;
+		
+		/**
+		 * <p>Pointer to the list this iterator is iterating over.</p>
+		 */
+		final LinkedList<T> list;
 	}  // class Iterator<T>
 	
 	public int size() {
@@ -72,7 +71,7 @@ public class LinkedList<T> implements List<T> {
 	}
 
 	public boolean isEmpty() {
-		return (head == null);
+		return (this.size() == 0);
 	}
 
 	public boolean contains(Object o) {
@@ -85,7 +84,7 @@ public class LinkedList<T> implements List<T> {
 	}
 
 	public Iterator<T> iterator() {
-		return new Iterator<T>(this.head);
+		return new Iterator<T>(this, this.head);
 	}
 
 	public Object[] toArray() {
@@ -117,21 +116,21 @@ public class LinkedList<T> implements List<T> {
 		}
 	}
 
-	public boolean remove(Object o) {
-		int index = indexOf(o);
-		if (index < 0)
-			return false;
-		remove(index);
+
+	public boolean containsAll(Collection<?> c) {
+		for (Object o : c) {
+			if (indexOf(o) < 0) {
+				return false;
+			}
+		}
 		return true;
 	}
 
-	public boolean containsAll(Collection c) {
-		return false;
-	}
-
-	public boolean addAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addAll(Collection<? extends T> c) {
+		for (T t : c) {
+			this.add(t);
+		}
+		return !c.isEmpty();
 	}
 
 	public boolean addAll(int index, Collection c) {
@@ -140,7 +139,6 @@ public class LinkedList<T> implements List<T> {
 	}
 
 	public boolean removeAll(Collection c) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -152,6 +150,7 @@ public class LinkedList<T> implements List<T> {
 	public void clear() {
 		this.size = 0;
 		this.head = null;
+		this.tail = null;
 	}
 
 	/**
@@ -159,13 +158,21 @@ public class LinkedList<T> implements List<T> {
 	 * @param index
 	 * @return
 	 */
-	private Node<T> getnode(int index) {
+	protected Node<T> getnode(int index) {
 		int i = 0;
 		Node<T> node = head;
 		while (i++ < index && node != null) {
 			node = node.next;
 		}
 		return node;
+	}
+	
+	protected Node<T> getnodebyvalue(Object value) {
+		Node<T> node = head;
+		while (node != null && !value.equals(node.value)) {
+			node = node.next;
+		}
+		return node;		
 	}
 	
 	public T get(int i) {
@@ -177,6 +184,7 @@ public class LinkedList<T> implements List<T> {
 	}
 
 	public T set(int index, T element) {
+		if (index < 0) return null;
 		Node<T> node = getnode(index);
 		T result = null;
 		if (node != null) {
@@ -208,8 +216,8 @@ public class LinkedList<T> implements List<T> {
 			node.previous = null;
 			node.next = null;
 			size--;
-			if (head == node) head = next;
-			if (tail == node) tail = previous;
+			if (node == head) this.head = next;
+			if (node == tail) this.tail = previous;
 			return node.value;
 		}
 	}
@@ -218,17 +226,37 @@ public class LinkedList<T> implements List<T> {
 		return remove(getnode(index));
 	}
 
+	public boolean remove(Object o) {
+		Node<T> node = getnodebyvalue(o);
+		if (node == null)
+			return false;
+		remove(node);
+		return true;
+	}
+
 	public int indexOf(Object o) {
 		int i = 0;
-		for (Node<T> node = head; node != null; ++i) {
-			if (o.equals(node.value)) { return i; }
+		for (Node<T> node = head; node != null; node = node.next, ++i) {
+			if (o != null && o.equals(node.value)) {
+				return i;
+			} else if (o == null && node.value == null) {
+				return i;
+			}
 		}
 		return -1;
 	}
 
 	public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = -1;
+		int index = 0;
+		for (Node<T> node = head; node != null; node = node.next, ++index) {
+			if (o != null && o.equals(node.value)) {
+				result = index;
+			} else if (o == null && node.value == null) {
+				result = index;
+			}
+		}
+		return result;
 	}
 
 	public ListIterator listIterator() {
@@ -241,14 +269,14 @@ public class LinkedList<T> implements List<T> {
 		return null;
 	}
 
-	@Override
 	public List<T> subList(int fromIndex, int toIndex) {
+		LinkedList<T> result = new LinkedList<T>();
 		Node<T> node = getnode(fromIndex);
-		if (node == null) {
-			return new LinkedList<T>();	
+		while (node != null && fromIndex++ < toIndex) {
+			result.add(node.value);
+			node = node.next;
 		}
-		return new LinkedList<T>();
-		
+		return result;
 	}
 	
 	@Override
@@ -258,7 +286,7 @@ public class LinkedList<T> implements List<T> {
 		for (Iterator<T> it = this.iterator();  it.hasNext();) {
 			T value = it.next();
 			sb.append(value.toString());
-			if (it.hasNext()) sb.append(",");
+			if (it.hasNext()) sb.append(", ");
 		}
 		sb.append("]");
 		return sb.toString();
