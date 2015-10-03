@@ -77,9 +77,9 @@ public class RBTree<T> {
   }
 
   public Graph<T> AsGraph() {
-    Graph<T> result = new Graph<>();
+    Graph<T> result = new Graph<T>();
     bfs(node -> {
-      result.AddNode((T) node.value);
+      result.maybeAddNode((T) node.value);
       if (node.left != null) result.AddEdge((T) node.value, (T) node.left.value);
       if (node.right != null) result.AddEdge((T) node.value, (T) node.right.value);
     });
@@ -194,7 +194,7 @@ public class RBTree<T> {
     Graph<String> g = new Graph<String>();
     // tree.inorder(node -> {g.AddEdge(node.value, node.left.value); g.AddEdge(node.value, node.right.value); });
 
-    for (Set<Graph.Node<String>> level : tree.AsGraph().CoffmanGraham()) {
+    for (Collection<String> level : tree.AsGraph().CoffmanGraham()) {
       System.out.println(level);
     }
   }
