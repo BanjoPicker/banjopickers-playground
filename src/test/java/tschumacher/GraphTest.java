@@ -164,4 +164,16 @@ public class GraphTest {
 		assertNotNull(c);
 		assertEquals(4, c.size());
 	}
+
+    @Test
+    public void CoffmanGrahamBasicFunctionalityTest() {
+		Graph<Integer> graph = new Graph<Integer>();
+		graph.AddEdges(3, 8, 10);
+		graph.AddEdges(5, 11);
+		graph.AddEdges(7, 8, 11);
+		graph.AddEdges(8, 9);
+		graph.AddEdges(11, 2, 9, 10);
+
+        System.out.println(graph.CoffmanGraham());
+    }
 }
