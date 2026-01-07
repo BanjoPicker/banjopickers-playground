@@ -9,9 +9,12 @@ PROTOC_INCS = $(PROTOC_HOME)/include
 PROTOC_LIBS = $(PROTOC_HOME)/lib
 
 GXX = $(shell which g++)
-GXX_OPTS = 
+GXX_OPTS = -std=c++17
 GXX_INCL = -Isrc/test/c++ -I$(BOOST_HOME)/include
 GXX_LIBS = -lpthread -lboost_filesystem -lboost_system
+
+main: main.cc $(shell find include -type f -name '*.h')
+	g++ $(GXX_OPTS) -I include $<
 
 build/%.o: src/test/c++/%.cpp $(shell find src/test/c++ -type f -name '*.hpp')
 	@mkdir -p build
@@ -38,14 +41,6 @@ TARGETS = build/FilamentTest
 TARGETS += build/boost
 TARGETS += build/explicit
 TARGETS += build/self
-<<<<<<< HEAD
-TARGETS += build/for_each
-TARGETS += build/play
-=======
-TARGETS += build/to_string
-TARGETS += build/gen/test.h
-TARGETS += build/gen/org/bp.h
->>>>>>> ef79c92b92c7380305f47eda6c2a9d2c5525d0fe
 
 .phony: all
 all: $(TARGETS)
